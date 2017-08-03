@@ -169,7 +169,7 @@
 		reset-gpios = <&gpio4 28 GPIO_ACTIVE_LOW>;
 	};
 
-	sound {
+	/*sound {
 		compatible = "simple-audio-card";
 		simple-audio-card,name = "SPDIF";
 		simple-audio-card,dai-link@1 {
@@ -181,6 +181,27 @@
 	spdif_out: spdif-out {
 		compatible = "linux,spdif-dit";
 		#sound-dai-cells = <0>;
+	};*/
+	es8323-sound {
+		compatible = "simple-audio-card";
+		simple-audio-card,format = "i2s";
+		simple-audio-card,name = "rockchip,es8323-codec";
+		simple-audio-card,mclk-fs = <256>;
+		simple-audio-card,widgets = 
+				"Microphone","Mic Jack",
+				"Headphone","Headphone Jack";
+		simple-audio-card,routing = 
+				"Mic Jack","MICBIAS1",
+				"IN1P","Mic Jack",
+				"Headphone Jack","HPOL",
+				"Headphone Jack","HPOR";
+		simple-audio-card,cpu {
+				sound-dai = <&i2s>;
+		};
+		simple-audio-card,codec {
+				sound-dai = <&es8323>;
+		};
+
 	};
 
 	vbat_wl: vcc_sys: vsys-regulator {
@@ -478,13 +499,48 @@
 
 &i2c1 {
 	status = "okay";
+	rtc@51 {
+		compatible = "nxp,pcf8563";
+		reg = <0x51>;
+	};
+	ts@14 {
+		compatible = "goodix,gt9xx";
+		reg = <0x14>;
+		touch-gpio = <&gpio8 6 IRQ_TYPE_LEVEL_HIGH>;
+		reset-gpio = <&gpio8 7 GPIO_ACTIVE_HIGH>;
+		max-x = <1280>;
+		max-y = <800>;
+		tp-size = <928>;
+	};
 };
 
 &i2c2 {
 	status = "okay";
+	i2c-scl-rising-time-ns = <300>;
+	i2c-scl-falling-time-ns = <15>;
+
+    es8323: es8323@10{
+		compatible = "everest,es8323";
+		reg = <0x10>;
+		spk-con-gpio = <&gpio0 10 GPIO_ACTIVE_HIGH>;
+		hp-det-gpio = <&gpio7 15 GPIO_ACTIVE_HIGH>;
+		hp-mic-only = <1>;
+		#sound-dai-cells = <0>;
+		system-clock-frequency = <11289600>;
+		//clocks = <&cru SCLK_I2S_8CH_OUT>;
+		clock-names = "mclk";
+		pinctrl-names = "default";
+		pinctrl-0 = <&es8323_spkcon &es8323_hpdet>;
+	};
 };
 
 &i2c4 {
+	status = "okay";
+};
+
+&i2s {
+
+	#sound-dai-cells = <0>;
 	status = "okay";
 };
 
@@ -629,6 +685,15 @@
 	vga {
 		vga_enabled_h: vgaenabled-h {
 			rockchip,pins = <7 2 RK_FUNC_GPIO &pcfg_pull_none>;
+		};
+	};
+
+	es8223 {
+		es8323_spkcon: es8323-spkcon {
+			rockchip,pins = <0 10 RK_FUNC_GPIO &pcfg_pull_up>;
+		};
+		es8323_hpdet: es8323-hpdet {
+			rockchip,pins = <7 15 RK_FUNC_GPIO &pcfg_pull_up>;
 		};
 	};
 };
