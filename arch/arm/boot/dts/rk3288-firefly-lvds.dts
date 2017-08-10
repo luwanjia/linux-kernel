@@ -149,22 +149,17 @@
 	status = "okay";
 };
 
-&i2c2 {
+&i2c1 {
 	status = "okay";
-
-	es8323: es8323@10 {
-		compatible = "everest,es8323";
-		reg = <0x10>;
-		hp-det-gpio = <&gpio7 15 GPIO_ACTIVE_HIGH>;
-		clock-names = "mclk";
-		clocks = <&cru SCLK_I2S0_OUT>;
-		#sound-dai-cells = <0>;
+	ts@14 {
+		compatible = "goodix,gt9xx";
+		reg = <0x14>;
+		touch-gpio = <&gpio8 6 IRQ_TYPE_LEVEL_HIGH>;
+		reset-gpio = <&gpio8 7 GPIO_ACTIVE_HIGH>;
+		max-x = <1280>;
+		max-y = <800>;
+		tp-size = <928>;
 	};
-};
-
-&i2s {
-	#sound-dai-cells = <0>;
-	status = "okay";
 };
 
 &pinctrl {
@@ -182,9 +177,6 @@
 	};
 
 };
-
-
-
 
 &ir {
 	gpios = <&gpio7 0 GPIO_ACTIVE_LOW>;

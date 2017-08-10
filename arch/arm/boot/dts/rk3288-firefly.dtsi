@@ -503,15 +503,6 @@
 		compatible = "nxp,pcf8563";
 		reg = <0x51>;
 	};
-	ts@14 {
-		compatible = "goodix,gt9xx";
-		reg = <0x14>;
-		touch-gpio = <&gpio8 6 IRQ_TYPE_LEVEL_HIGH>;
-		reset-gpio = <&gpio8 7 GPIO_ACTIVE_HIGH>;
-		max-x = <1280>;
-		max-y = <800>;
-		tp-size = <928>;
-	};
 };
 
 &i2c2 {
@@ -527,8 +518,8 @@
 		hp-mic-only = <1>;
 		#sound-dai-cells = <0>;
 		system-clock-frequency = <11289600>;
-		//clocks = <&cru SCLK_I2S_8CH_OUT>;
 		clock-names = "mclk";
+		clocks = <&cru SCLK_I2S0_OUT>;
 		pinctrl-names = "default";
 		pinctrl-0 = <&es8323_spkcon &es8323_hpdet>;
 	};
@@ -539,7 +530,6 @@
 };
 
 &i2s {
-
 	#sound-dai-cells = <0>;
 	status = "okay";
 };
