@@ -818,7 +818,7 @@
 			#size-cells = <0>;
 
 			lvds_out: endpoint@0 {
-				remote-endpoint = <&sda7123_in>;
+                               remote-endpoint = <&sda7123_in>;
 			};
 		};
 	};
